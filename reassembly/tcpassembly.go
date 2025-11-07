@@ -754,7 +754,7 @@ func (a *Assembler) AssembleWithContext(packet gopacket.Packet, t *layers.TCP, a
 		}
 	}
 
-	action = a.handleBytes(bytes, seq, half, t.SYN, t.RST || t.FIN, action, ac)
+	action = a.handleBytes(bytes, seq, half, t.SYN, t.RST, action, ac)
 	if len(a.ret) > 0 {
 		action.nextSeq = a.sendToConnection(conn, half, ac)
 	}
