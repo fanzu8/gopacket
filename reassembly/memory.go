@@ -186,6 +186,15 @@ func (p *StreamPool) getConnection(k key, end bool, ts time.Time, tcp *layers.TC
 	p.mu.RLock()
 	conn, half, rev := p.getHalf(k)
 	p.mu.RUnlock()
+
+	// handle port reuse
+	if conn != nil && tcp.SYN && !tcp.ACK {
+		p.mu.Lock()
+		delete(p.conns, k)
+		p.mu.Unlock()
+		conn = nil
+	}
+
 	if end || conn != nil {
 		return conn, half, rev
 	}
